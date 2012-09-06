@@ -52,39 +52,53 @@ class DbMenu {
         return $menu_data;
     }
 
+    /*
+     * Source:  http://twitter.github.com/bootstrap/components.html#dropdowns
+     *          http://twitter.github.com/bootstrap/components.html#navbar 
+     */
     private static function build_menu($menu_data, $parent = 0, $sub = false)
     {
-       $html = "";
-       if (isset($menu_data['parents'][$parent]))
-       {
-          //$html .= "<ul>\n";
-           foreach ($menu_data['parents'][$parent] as $itemId)
-           {
-              if(!isset($menu_data['parents'][$itemId]))
-              {
-                if(!$sub && $parent != 0)
+        $html = "";
+        if (isset($menu_data['parents'][$parent]))
+        {
+            foreach ($menu_data['parents'][$parent] as $itemId)
+            {
+                //check for sub items
+                if(!isset($menu_data['parents'][$itemId]))
                 {
-                    $html .= '<li>'.$menu_data['items'][$itemId]['title']."\n";
+                    //the current item has no subitems
+                    $html .= "<li><a href='/".$menu_data['items'][$itemId]['link']."'> 2".$menu_data['items'][$itemId]['title']."</a></li>";
                 }
                 else
                 {
-                    $html .= "<li><a href='/".$menu_data['items'][$itemId]['link']."'>".$menu_data['items'][$itemId]['title']."</a></li>\n";
+                    //the current item has one more subitems
+                    if($parent==0)
+                    { 
+                        //set the dropdown code for the 1st level
+                        $html .= '<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">'.$menu_data['items'][$itemId]['title'].'<b class="caret"></b></a>';
+                    }
+                    else
+                    {
+                        //set the dropdown code for the 2nd level
+                        $html .= '<li class="dropdown-submenu"><a href="'.$menu_data['items'][$itemId]['link'].'">'.$menu_data['items'][$itemId]['title'].'<b class="caret"></b></a>';
+                    }
+                
+                    if ($parent === 0 || ($parent!=0 && $sub==true))
+                    {
+                        $html .= '<ul class="dropdown-menu">';
+                    }
+                    
+                    $html .= static::build_menu($menu_data, $itemId, true);
+                    $html .= "</li>";
                 }
-              }
-              else
-              {
-                 $html .= "<li><a href='/".$menu_data['items'][$itemId]['link']."'>".$menu_data['items'][$itemId]['title']."</a>\n";
-                 if ($parent === 0)
-                 {
-                    $html .= "<ul>\n";
-                 }
-                 $html .= static::build_menu($menu_data, $itemId, true);
-                 $html .= "</li>\n";
-              }
-           }
-           $html .= "</ul>";
-       }
-       return $html;
+            }
+            
+            if ($sub == true)
+            {
+                $html .= "</ul>";
+            }
+        }
+        
+        return $html;
     }
-
 }
