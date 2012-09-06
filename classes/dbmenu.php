@@ -67,7 +67,7 @@ class DbMenu {
                 if(!isset($menu_data['parents'][$itemId]))
                 {
                     //the current item has no subitems
-                    $html .= "<li><a href='/".$menu_data['items'][$itemId]['link']."'> 2".$menu_data['items'][$itemId]['title']."</a></li>";
+                    $html .= "<li><a href='/".$menu_data['items'][$itemId]['link']."'>".$menu_data['items'][$itemId]['title']."</a></li>";
                 }
                 else
                 {
